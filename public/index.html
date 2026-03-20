@@ -1,468 +1,174 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unrelativity · Rehber</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>Unrelativity · Mentor</title>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #1a0e08;
-      --bg2: #241408;
-      --bg3: #2a1a0e;
-      --border: #4a3828;
-      --border-light: #3a2818;
-      --text: #e8ddd0;
-      --text-muted: #c4a882;
-      --text-dim: #8b6e4e;
-      --accent: #c4a882;
-      --accent2: #f0e8dc;
+      --bg:#1a0e08;--bg2:#241408;--bg3:#2a1a0e;
+      --border:#4a3828;--border-light:#3a2818;
+      --text:#e8ddd0;--text-muted:#c4a882;--text-dim:#8b6e4e;
+      --accent:#c4a882;--accent2:#f0e8dc;
     }
-
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'EB Garamond', Georgia, serif;
-      font-size: 18px;
-      line-height: 1.75;
-    }
-
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    /* Header */
-    .header {
-      padding: 2.5rem 0 1.5rem;
-      border-bottom: 1px dashed var(--border);
-      margin-bottom: 2rem;
-    }
-
-    .header-top {
-      display: flex;
-      align-items: baseline;
-      gap: 1rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .site-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 300;
-      color: var(--text-muted);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      text-decoration: none;
-    }
-
-    .site-name:hover { color: var(--accent2); }
-
-    .separator {
-      color: var(--border);
-      font-size: 0.9rem;
-    }
-
-    .page-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 300;
-      color: var(--text-dim);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    .header-desc {
-      font-size: 0.9rem;
-      color: var(--text-dim);
-      font-style: italic;
-      letter-spacing: 0.03em;
-    }
-
-    /* Chat area */
-    .chat-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .messages {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      min-height: 0;
-    }
-
-    .message {
-      padding: 1.4rem 0;
-      border-bottom: 1px solid var(--border-light);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message-role {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-
-    .message.user .message-role { color: var(--text-dim); }
-    .message.assistant .message-role { color: var(--accent); }
-
-    .message-text {
-      font-size: 1rem;
-      line-height: 1.82;
-      color: var(--text);
-    }
-
-    .message.user .message-text {
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .message-text p { margin-bottom: 0.8em; }
-    .message-text p:last-child { margin-bottom: 0; }
-
-    /* Welcome message */
-    .welcome {
-      padding: 2rem 0 1.5rem;
-      border-bottom: 1px dashed var(--border);
-      margin-bottom: 1rem;
-    }
-
-    .welcome-text {
-      font-size: 1rem;
-      color: var(--text-muted);
-      line-height: 1.82;
-      font-style: italic;
-    }
-
-    /* Thinking indicator */
-    .thinking {
-      padding: 1.4rem 0;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .thinking-role {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.6rem;
-    }
-
-    .thinking-dots {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      height: 1.4rem;
-    }
-
-    .thinking-dots span {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--border);
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-
-    .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes pulse {
-      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-      40% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Input area */
-    .input-area {
-      padding: 1.5rem 0 2rem;
-      position: sticky;
-      bottom: 0;
-      background: linear-gradient(to bottom, transparent, var(--bg) 20%);
-    }
-
-    .input-wrapper {
-      display: flex;
-      gap: 0;
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      transition: border-color 0.2s;
-    }
-
-    .input-wrapper:focus-within {
-      border-color: var(--accent);
-    }
-
-    textarea {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: 'EB Garamond', Georgia, serif;
-      font-size: 1rem;
-      line-height: 1.6;
-      padding: 0.9rem 1rem;
-      resize: none;
-      min-height: 52px;
-      max-height: 160px;
-    }
-
-    textarea::placeholder {
-      color: var(--text-dim);
-      font-style: italic;
-    }
-
-    .send-btn {
-      background: transparent;
-      border: none;
-      border-left: 1px solid var(--border);
-      color: var(--text-dim);
-      cursor: pointer;
-      padding: 0 1.2rem;
-      font-size: 1.1rem;
-      transition: color 0.2s, background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .send-btn:hover:not(:disabled) {
-      color: var(--accent2);
-      background: var(--bg3);
-    }
-
-    .send-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    .input-hint {
-      margin-top: 0.5rem;
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      font-style: italic;
-      letter-spacing: 0.02em;
-    }
-
-    /* Error */
-    .error-msg {
-      padding: 0.8rem 1rem;
-      border: 1px solid #6b3a2a;
-      background: #2a1510;
-      color: #c4886e;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    /* Footer */
-    .footer {
-      padding: 1rem 0 1.5rem;
-      border-top: 1px dashed var(--border);
-      margin-top: auto;
-    }
-
-    .footer-text {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .footer-text a {
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-text a:hover { color: var(--accent); }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); }
-
-    @media (max-width: 600px) {
-      .page { padding: 0 1rem; }
-      html { font-size: 16px; }
-    }
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.75;}
+    .page{min-height:100vh;display:flex;flex-direction:column;max-width:780px;margin:0 auto;padding:0 1.5rem;}
+    .header{padding:2rem 0 1.2rem;border-bottom:1px dashed var(--border);margin-bottom:1.5rem;}
+    .header-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:0.5rem;}
+    .header-left{display:flex;align-items:baseline;gap:1rem;}
+    .site-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text-muted);letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;}
+    .site-name:hover{color:var(--accent2);}
+    .separator{color:var(--border);}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text-dim);letter-spacing:0.18em;text-transform:uppercase;}
+    .back-btn{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-weight:300;color:var(--text-dim);letter-spacing:0.1em;text-decoration:none;border:1px solid var(--border);padding:0.3rem 0.8rem;transition:color 0.2s,border-color 0.2s;}
+    .back-btn:hover{color:var(--accent);border-color:var(--accent);}
+    .header-meta{display:flex;align-items:center;gap:1.2rem;}
+    .lang-switch{font-size:0.8rem;}
+    .lang-switch a{color:var(--text-dim);text-decoration:none;border-bottom:1px dashed var(--border);}
+    .lang-switch a:hover{color:var(--accent);}
+    .settings{display:flex;align-items:center;gap:0.8rem;margin-left:auto;}
+    .setting-label{font-size:0.72rem;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
+    .setting-control{display:flex;align-items:center;gap:0.4rem;}
+    .setting-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:color 0.2s,border-color 0.2s;padding:0;}
+    .setting-btn:hover{color:var(--accent);border-color:var(--accent);}
+    .setting-val{font-size:0.72rem;color:var(--text-dim);min-width:1.8rem;text-align:center;}
+    .chat-container{flex:1;display:flex;flex-direction:column;}
+    .messages{flex:1;display:flex;flex-direction:column;}
+    .message{padding:1.4rem 0;border-bottom:1px solid var(--border-light);animation:fadeIn 0.3s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+    .message-role{font-family:'Cormorant Garamond',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.6rem;}
+    .message.user .message-role{color:var(--text-dim);}
+    .message.assistant .message-role{color:var(--accent);}
+    .message-text{font-size:1rem;line-height:1.82;color:var(--text);}
+    .message.user .message-text{color:var(--text-muted);font-style:italic;}
+    .message-text p{margin-bottom:0.8em;}
+    .message-text p:last-child{margin-bottom:0;}
+    .welcome{padding:1.5rem 0 1.2rem;border-bottom:1px dashed var(--border);margin-bottom:1rem;}
+    .welcome-text{font-size:0.95rem;color:var(--text-muted);line-height:1.82;font-style:italic;}
+    .thinking{padding:1.4rem 0;border-bottom:1px solid var(--border-light);}
+    .thinking-role{font-family:'Cormorant Garamond',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.6rem;}
+    .thinking-dots{display:flex;gap:5px;align-items:center;height:1.4rem;}
+    .thinking-dots span{width:5px;height:5px;border-radius:50%;background:var(--border);animation:pulse 1.4s ease-in-out infinite;}
+    .thinking-dots span:nth-child(2){animation-delay:0.2s;}
+    .thinking-dots span:nth-child(3){animation-delay:0.4s;}
+    @keyframes pulse{0%,80%,100%{opacity:0.3;transform:scale(0.8);}40%{opacity:1;transform:scale(1);}}
+    .input-area{padding:1.5rem 0 2rem;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--bg) 20%);}
+    .input-wrapper{display:flex;border:1px solid var(--border);background:var(--bg2);transition:border-color 0.2s;}
+    .input-wrapper:focus-within{border-color:var(--accent);}
+    textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:1rem;line-height:1.6;padding:0.9rem 1rem;resize:none;min-height:52px;max-height:160px;}
+    textarea::placeholder{color:var(--text-dim);font-style:italic;}
+    .send-btn{background:transparent;border:none;border-left:1px solid var(--border);color:var(--text-dim);cursor:pointer;padding:0 1.2rem;font-size:1.1rem;transition:color 0.2s,background 0.2s;display:flex;align-items:center;}
+    .send-btn:hover:not(:disabled){color:var(--accent2);background:var(--bg3);}
+    .send-btn:disabled{opacity:0.3;cursor:not-allowed;}
+    .input-hint{margin-top:0.5rem;font-size:0.78rem;color:var(--text-dim);font-style:italic;}
+    .error-msg{padding:0.8rem 1rem;border:1px solid #6b3a2a;background:#2a1510;color:#c4886e;font-size:0.9rem;margin-bottom:1rem;}
+    .footer{padding:1rem 0 1.5rem;border-top:1px dashed var(--border);margin-top:auto;}
+    .footer-text{font-size:0.78rem;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
+    .footer-text a{color:var(--text-dim);text-decoration:none;}
+    .footer-text a:hover{color:var(--accent);}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);}
+    @media(max-width:600px){.page{padding:0 1rem;}.settings{display:none;}}
   </style>
 </head>
 <body>
 <div class="page">
-
   <header class="header">
     <div class="header-top">
-      <a href="https://unrelativity.xyz" class="site-name">unrelativity</a>
-      <span class="separator">·</span>
-      <span class="page-title">Rehber</span>
+      <div class="header-left">
+        <a href="https://unrelativity.xyz" class="site-name">unrelativity</a>
+        <span class="separator">·</span>
+        <span class="page-title">Mentor</span>
+      </div>
+      <a href="https://unrelativity.xyz" class="back-btn">← Return</a>
     </div>
-    <p class="header-desc">Çerçeve hakkındaki sorularınızı yanıtlayabilirim</p>
+    <div class="header-meta">
+      <div class="lang-switch"><a href="/tr">Türkçe</a></div>
+      <div class="settings">
+        <span class="setting-label">Text</span>
+        <div class="setting-control">
+          <button class="setting-btn" onclick="adjustFont(-1)">−</button>
+          <span class="setting-val" id="fontVal">18</span>
+          <button class="setting-btn" onclick="adjustFont(1)">+</button>
+        </div>
+        <span class="setting-label">Brightness</span>
+        <div class="setting-control">
+          <button class="setting-btn" onclick="adjustBrightness(-1)">○</button>
+          <span class="setting-val" id="brightVal">2</span>
+          <button class="setting-btn" onclick="adjustBrightness(1)">●</button>
+        </div>
+      </div>
+    </div>
   </header>
 
   <div class="chat-container">
     <div class="welcome">
-      <p class="welcome-text">Göresizlik çerçevesi, temel kavramlar veya kitaplar hakkında bir sorunuz varsa buraya yazabilirsiniz. Türkçe veya İngilizce sorabilirsiniz.</p>
+      <p class="welcome-text">Ask about the Unrelativity framework, its core concepts, or the books. You may ask in English or Turkish.</p>
     </div>
-
     <div class="messages" id="messages"></div>
-
     <div id="error" class="error-msg" style="display:none;"></div>
-
-    <div class="input-area">
+    <div class="input-area" id="inputArea">
       <div class="input-wrapper">
-        <textarea
-          id="input"
-          placeholder="Sorunuzu yazın..."
-          rows="1"
-          onkeydown="handleKey(event)"
-          oninput="autoResize(this)"
-        ></textarea>
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Gönder">
-          &#8594;
-        </button>
+        <textarea id="input" placeholder="Write your question..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">&#8594;</button>
       </div>
-      <p class="input-hint">Enter göndermek için · Shift+Enter yeni satır</p>
+      <p class="input-hint">Enter to send · Shift+Enter for new line</p>
     </div>
   </div>
 
   <footer class="footer">
-    <p class="footer-text">
-      <a href="https://unrelativity.xyz">unrelativity.xyz</a>
-      &nbsp;·&nbsp; Can Güralp
-    </p>
+    <p class="footer-text"><a href="https://unrelativity.xyz">unrelativity.xyz</a> &nbsp;·&nbsp; Can Güralp</p>
   </footer>
-
 </div>
-
 <script>
-  let conversationHistory = [];
-  let isLoading = false;
+  let history=[];let loading=false;
+  let fontSize=18;let brightness=2;
+  const bgLevels=['#0e0805','#140c06','#1a0e08','#221206','#2a1a0e'];
+  const textLevels=['#6b5340','#8b6e4e','#c4a882','#d8c4a8','#f0e8dc'];
 
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  function adjustFont(d){
+    fontSize=Math.min(26,Math.max(14,fontSize+d));
+    document.body.style.fontSize=fontSize+'px';
+    document.getElementById('fontVal').textContent=fontSize;
   }
-
-  function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+  function adjustBrightness(d){
+    brightness=Math.min(4,Math.max(0,brightness+d));
+    document.getElementById('brightVal').textContent=brightness;
+    document.body.style.background=bgLevels[brightness];
+    document.body.style.color=textLevels[brightness];
+    document.getElementById('inputArea').style.background=
+      'linear-gradient(to bottom,transparent,'+bgLevels[brightness]+' 20%)';
   }
-
-  function formatText(text) {
-    return text
-      .split('\n\n')
-      .map(p => p.trim())
-      .filter(p => p)
-      .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
-      .join('');
+  function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px';}
+  function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+  function fmt(t){return t.split('\n\n').map(p=>p.trim()).filter(p=>p).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('');}
+  function addMsg(role,text){
+    const d=document.createElement('div');d.className=`message ${role}`;
+    d.innerHTML=`<div class="message-role">${role==='user'?'You':'Mentor'}</div><div class="message-text">${fmt(text)}</div>`;
+    document.getElementById('messages').appendChild(d);d.scrollIntoView({behavior:'smooth',block:'end'});
   }
-
-  function addMessage(role, text) {
-    const msgs = document.getElementById('messages');
-    const div = document.createElement('div');
-    div.className = `message ${role}`;
-    div.innerHTML = `
-      <div class="message-role">${role === 'user' ? 'Siz' : 'Rehber'}</div>
-      <div class="message-text">${formatText(text)}</div>
-    `;
-    msgs.appendChild(div);
-    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  function showThinking(){
+    const d=document.createElement('div');d.className='thinking';d.id='thinking';
+    d.innerHTML='<div class="thinking-role">Mentor</div><div class="thinking-dots"><span></span><span></span><span></span></div>';
+    document.getElementById('messages').appendChild(d);d.scrollIntoView({behavior:'smooth',block:'end'});
   }
-
-  function showThinking() {
-    const msgs = document.getElementById('messages');
-    const div = document.createElement('div');
-    div.className = 'thinking';
-    div.id = 'thinking';
-    div.innerHTML = `
-      <div class="thinking-role">Rehber</div>
-      <div class="thinking-dots">
-        <span></span><span></span><span></span>
-      </div>
-    `;
-    msgs.appendChild(div);
-    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }
-
-  function removeThinking() {
-    const el = document.getElementById('thinking');
-    if (el) el.remove();
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('error');
-    el.textContent = msg;
-    el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 5000);
-  }
-
-  async function sendMessage() {
-    if (isLoading) return;
-    const input = document.getElementById('input');
-    const text = input.value.trim();
-    if (!text) return;
-
-    isLoading = true;
-    document.getElementById('sendBtn').disabled = true;
-    input.value = '';
-    input.style.height = 'auto';
-
-    conversationHistory.push({ role: 'user', content: text });
-    addMessage('user', text);
-    showThinking();
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationHistory })
-      });
-
+  function removeThinking(){const e=document.getElementById('thinking');if(e)e.remove();}
+  function showError(m){const e=document.getElementById('error');e.textContent=m;e.style.display='block';setTimeout(()=>{e.style.display='none';},5000);}
+  async function sendMessage(){
+    if(loading)return;
+    const inp=document.getElementById('input');const text=inp.value.trim();if(!text)return;
+    loading=true;document.getElementById('sendBtn').disabled=true;inp.value='';inp.style.height='auto';
+    history.push({role:'user',content:text});addMsg('user',text);showThinking();
+    try{
+      const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})});
       removeThinking();
-
-      if (!response.ok) {
-        const err = await response.json();
-        showError(err.error || 'Bir hata oluştu.');
-        conversationHistory.pop();
-        return;
-      }
-
-      const data = await response.json();
-      const reply = data.response;
-
-      conversationHistory.push({ role: 'assistant', content: reply });
-      addMessage('assistant', reply);
-
-    } catch (err) {
-      removeThinking();
-      showError('Bağlantı hatası. Lütfen tekrar deneyin.');
-      conversationHistory.pop();
-    } finally {
-      isLoading = false;
-      document.getElementById('sendBtn').disabled = false;
-      input.focus();
-    }
+      if(!r.ok){const e=await r.json();showError(e.error||'An error occurred.');history.pop();return;}
+      const d=await r.json();history.push({role:'assistant',content:d.response});addMsg('assistant',d.response);
+    }catch(e){removeThinking();showError('Connection error. Please try again.');history.pop();}
+    finally{loading=false;document.getElementById('sendBtn').disabled=false;document.getElementById('input').focus();}
   }
 </script>
 </body>
