@@ -83,7 +83,7 @@
         <span class="separator">·</span>
         <span class="page-title">Rehber</span>
       </div>
-<a href="#" onclick="if(history.length>1){history.back();}else{window.location='https://unrelativity.xyz';}return false;" class="back-btn">← Geri dön</a>
+      <a href="https://unrelativity.xyz" class="back-btn">← Geri dön</a>
     </div>
     <div class="header-meta">
       <div class="lang-switch"><a href="/">English</a></div>
@@ -126,8 +126,30 @@
 <script>
   let history=[];let loading=false;
   let fontSize=18;let brightness=2;
+  let emailTimer=null;let emailSent=false;
   const bgLevels=['#0e0805','#140c06','#1a0e08','#221206','#2a1a0e'];
   const textLevels=['#6b5340','#8b6e4e','#c4a882','#d8c4a8','#f0e8dc'];
+
+  function scheduleEmail(){
+    if(emailTimer)clearTimeout(emailTimer);
+    if(history.length===0||emailSent)return;
+    emailTimer=setTimeout(sendEmailLog,8*60*1000);
+  }
+
+  async function sendEmailLog(){
+    if(emailSent||history.length===0)return;
+    emailSent=true;
+    try{
+      await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messages:history,lang:'tr'})});
+    }catch(e){console.log('Email log error:',e);}
+  }
+
+  window.addEventListener('beforeunload',()=>{
+    if(history.length>0&&!emailSent){
+      navigator.sendBeacon('/api/log',JSON.stringify({messages:history,lang:'tr'}));
+    }
+  });
 
   function adjustFont(d){
     fontSize=Math.min(26,Math.max(14,fontSize+d));
@@ -169,6 +191,7 @@
       removeThinking();
       if(!r.ok){const e=await r.json();showError(e.error||'Bir hata oluştu.');history.pop();return;}
       const d=await r.json();history.push({role:'assistant',content:d.response});addMsg('assistant',d.response);
+      scheduleEmail();
     }catch(e){removeThinking();showError('Bağlantı hatası. Lütfen tekrar deneyin.');history.pop();}
     finally{loading=false;document.getElementById('sendBtn').disabled=false;document.getElementById('input').focus();}
   }
