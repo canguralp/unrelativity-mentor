@@ -147,7 +147,9 @@
 
   window.addEventListener('beforeunload',()=>{
     if(history.length>0&&!emailSent){
-      navigator.sendBeacon('/api/log',JSON.stringify({messages:history,lang:'tr'}));
+      emailSent=true;
+      const blob=new Blob([JSON.stringify({messages:history,lang:'tr'})],{type:'application/json'});
+      navigator.sendBeacon('/api/log',blob);
     }
   });
 
