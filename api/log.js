@@ -3,13 +3,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages, lang } = req.body;
+  let body = req.body;
 
-  if (!messages || !Array.isArray(messages) || messages.length === 0) {
-    return res.status(400).json({ error: 'Messages required' });
+  // Handle both JSON and plain text (sendBeacon sends as text/plain)
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) { body = {}; }
   }
 
-  // Format conversation as readable text
+  const { messages, lang } = body || {};
+
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: 'No messages' });
+  }
+
   const date = new Date().toLocaleString('tr-TR', { timeZone: 'America/New_York' });
   const langLabel = lang === 'tr' ? 'Türkçe' : 'English';
 
@@ -22,19 +28,7 @@ export default async function handler(req, res) {
   }
 
   const subject = `Unrelativity Mentor — ${langLabel} — ${date}`;
-
-  const emailBody = `
-Mentor Konuşması / Mentor Session
-Tarih / Date: ${date}
-Dil / Language: ${langLabel}
-Mesaj sayısı / Message count: ${messages.length}
-
-─────────────────────────────────
-
-${transcript}
-─────────────────────────────────
-unrelativity.xyz
-  `.trim();
+  const emailBody = `Mentor Konuşması / Session\nTarih: ${date}\nDil: ${langLabel}\nMesaj: ${messages.length}\n\n─────────────────────────────────\n\n${transcript}─────────────────────────────────\nunrelativity.xyz`;
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -51,16 +45,17 @@ unrelativity.xyz
       })
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const err = await response.json();
-      console.error('Resend error:', err);
-      return res.status(500).json({ error: 'Email failed' });
+      console.error('Resend error:', JSON.stringify(data));
+      return res.status(500).json({ error: 'Email failed', detail: data });
     }
 
     return res.status(200).json({ sent: true });
 
   } catch (error) {
-    console.error('Email error:', error);
+    console.error('Email error:', error.message);
     return res.status(500).json({ error: 'Server error' });
   }
 }
