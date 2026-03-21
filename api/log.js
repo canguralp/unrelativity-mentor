@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: 'Unrelativity Mentor <onboarding@resend.dev>',
-        to: ['canguralp47@gmail.com'],
+        to: ['canguralp@yahoo.com'],
         subject: subject,
         text: emailBody
       })
