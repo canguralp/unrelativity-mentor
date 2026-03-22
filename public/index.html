@@ -130,15 +130,14 @@
   const bgLevels=['#0e0805','#140c06','#1a0e08','#221206','#2a1a0e'];
   const textLevels=['#6b5340','#8b6e4e','#c4a882','#d8c4a8','#f0e8dc'];
 
-  function scheduleEmail(){
+ function scheduleEmail(){
     if(emailTimer)clearTimeout(emailTimer);
-    if(history.length===0||emailSent)return;
+    if(history.length===0)return;
     emailTimer=setTimeout(sendEmailLog,60*1000);
   }
 
   async function sendEmailLog(){
-    if(emailSent||history.length===0)return;
-    emailSent=true;
+   if(history.length===0)return;
     try{
       await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({messages:history,lang:'en'})});
