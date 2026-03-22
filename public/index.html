@@ -133,7 +133,7 @@
  function scheduleEmail(){
     if(emailTimer)clearTimeout(emailTimer);
     if(history.length===0)return;
-    emailTimer=setTimeout(sendEmailLog,60*1000);
+    emailTimer=setTimeout(sendEmailLog,8*60*1000);
   }
 
   async function sendEmailLog(){
