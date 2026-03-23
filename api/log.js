@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: 'Unrelativity Mentor <onboarding@resend.dev>',
+        from: 'Unrelativity Mentor <mentor@unrelativity.xyz>',
         to: ['canguralp47@gmail.com'],
         subject: subject,
         text: emailBody
