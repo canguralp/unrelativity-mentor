@@ -1,202 +1,546 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Göresizlik · Rehber</title>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:#1a0e08;--bg2:#241408;--bg3:#2a1a0e;
-      --border:#4a3828;--border-light:#3a2818;
-      --text:#e8ddd0;--text-muted:#c4a882;--text-dim:#8b6e4e;
-      --accent:#c4a882;--accent2:#f0e8dc;
-    }
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.75;}
-    .page{min-height:100vh;display:flex;flex-direction:column;max-width:780px;margin:0 auto;padding:0 1.5rem;}
-    .header{padding:2rem 0 1.2rem;border-bottom:1px dashed var(--border);margin-bottom:1.5rem;}
-    .header-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:0.5rem;}
-    .header-left{display:flex;align-items:baseline;gap:1rem;}
-    .site-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text-muted);letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;}
-    .site-name:hover{color:var(--accent2);}
-    .separator{color:var(--border);}
-    .page-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text-dim);letter-spacing:0.18em;text-transform:uppercase;}
-    .back-btn{font-family:'Cormorant Garamond',serif;font-size:0.85rem;font-weight:300;color:var(--text-dim);letter-spacing:0.1em;text-decoration:none;border:1px solid var(--border);padding:0.3rem 0.8rem;transition:color 0.2s,border-color 0.2s;}
-    .back-btn:hover{color:var(--accent);border-color:var(--accent);}
-    .header-meta{display:flex;align-items:center;gap:1.2rem;}
-    .lang-switch{font-size:0.8rem;}
-    .lang-switch a{color:var(--text-dim);text-decoration:none;border-bottom:1px dashed var(--border);}
-    .lang-switch a:hover{color:var(--accent);}
-    .settings{display:flex;align-items:center;gap:0.8rem;margin-left:auto;}
-    .setting-label{font-size:0.72rem;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
-    .setting-control{display:flex;align-items:center;gap:0.4rem;}
-    .setting-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:color 0.2s,border-color 0.2s;padding:0;}
-    .setting-btn:hover{color:var(--accent);border-color:var(--accent);}
-    .setting-val{font-size:0.72rem;color:var(--text-dim);min-width:1.8rem;text-align:center;}
-    .chat-container{flex:1;display:flex;flex-direction:column;}
-    .messages{flex:1;display:flex;flex-direction:column;}
-    .message{padding:1.4rem 0;border-bottom:1px solid var(--border-light);animation:fadeIn 0.3s ease;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-    .message-role{font-family:'Cormorant Garamond',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.6rem;}
-    .message.user .message-role{color:var(--text-dim);}
-    .message.assistant .message-role{color:var(--accent);}
-    .message-text{font-size:1rem;line-height:1.82;color:var(--text);}
-    .message.user .message-text{color:var(--text-muted);font-style:italic;}
-    .message-text p{margin-bottom:0.8em;}
-    .message-text p:last-child{margin-bottom:0;}
-    .welcome{padding:1.5rem 0 1.2rem;border-bottom:1px dashed var(--border);margin-bottom:1rem;}
-    .welcome-text{font-size:0.95rem;color:var(--text-muted);line-height:1.82;font-style:italic;}
-    .thinking{padding:1.4rem 0;border-bottom:1px solid var(--border-light);}
-    .thinking-role{font-family:'Cormorant Garamond',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.6rem;}
-    .thinking-dots{display:flex;gap:5px;align-items:center;height:1.4rem;}
-    .thinking-dots span{width:5px;height:5px;border-radius:50%;background:var(--border);animation:pulse 1.4s ease-in-out infinite;}
-    .thinking-dots span:nth-child(2){animation-delay:0.2s;}
-    .thinking-dots span:nth-child(3){animation-delay:0.4s;}
-    @keyframes pulse{0%,80%,100%{opacity:0.3;transform:scale(0.8);}40%{opacity:1;transform:scale(1);}}
-    .input-area{padding:1.5rem 0 2rem;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--bg) 20%);}
-    .input-wrapper{display:flex;border:1px solid var(--border);background:var(--bg2);transition:border-color 0.2s;}
-    .input-wrapper:focus-within{border-color:var(--accent);}
-    textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:1rem;line-height:1.6;padding:0.9rem 1rem;resize:none;min-height:52px;max-height:160px;}
-    textarea::placeholder{color:var(--text-dim);font-style:italic;}
-    .send-btn{background:transparent;border:none;border-left:1px solid var(--border);color:var(--text-dim);cursor:pointer;padding:0 1.2rem;font-size:1.1rem;transition:color 0.2s,background 0.2s;display:flex;align-items:center;}
-    .send-btn:hover:not(:disabled){color:var(--accent2);background:var(--bg3);}
-    .send-btn:disabled{opacity:0.3;cursor:not-allowed;}
-    .input-hint{margin-top:0.5rem;font-size:0.78rem;color:var(--text-dim);font-style:italic;}
-    .error-msg{padding:0.8rem 1rem;border:1px solid #6b3a2a;background:#2a1510;color:#c4886e;font-size:0.9rem;margin-bottom:1rem;}
-    .footer{padding:1rem 0 1.5rem;border-top:1px dashed var(--border);margin-top:auto;}
-    .footer-text{font-size:0.78rem;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
-    .footer-text a{color:var(--text-dim);text-decoration:none;}
-    .footer-text a:hover{color:var(--accent);}
-    ::-webkit-scrollbar{width:4px;}
-    ::-webkit-scrollbar-track{background:var(--bg);}
-    ::-webkit-scrollbar-thumb{background:var(--border);}
-    @media(max-width:600px){.page{padding:0 1rem;}.settings{display:none;}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unrelativity · Mentor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Crimson+Pro:wght@300;400&display=swap');
+
+  :root {
+    --bg: #F5C842;
+    --bg-dark: #E8B820;
+    --ink: #1A1208;
+    --ink-soft: #3D2E0A;
+    --ink-faint: #6B5520;
+    --white: #FFFDF0;
+    --border: rgba(26,18,8,0.15);
+    --shadow: rgba(26,18,8,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow: hidden;
+  }
+
+  /* LAYOUT */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 20px 0 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .site-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .site-link:hover { color: var(--ink); }
+
+  .separator {
+    color: var(--ink-faint);
+    font-size: 12px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .lang-toggle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .lang-toggle:hover { color: var(--ink); }
+
+  /* MESSAGES */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: fadeUp 0.3s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .message-content {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+
+  .message.user .message-role { text-align: right; color: var(--ink-soft); }
+  .message.user .message-content {
+    text-align: right;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .message.assistant .message-content {
+    font-family: 'Crimson Pro', serif;
+  }
+
+  /* TYPING INDICATOR */
+  .typing {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .typing span {
+    width: 5px; height: 5px;
+    background: var(--ink-faint);
+    border-radius: 50%;
+    animation: pulse 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* INPUT */
+  .input-area {
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    padding: 6px 0;
+    min-height: 32px;
+    max-height: 160px;
+    overflow-y: auto;
+    caret-color: var(--ink);
+  }
+  textarea::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .send-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--ink-faint);
+    transition: color 0.2s, transform 0.15s;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .send-btn:hover { color: var(--ink); transform: translateX(2px); }
+  .send-btn:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+  .input-hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-top: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 10px 0 16px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--ink); }
+
+  /* STATUS */
+  .status {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ERROR */
+  .error-msg {
+    font-size: 14px;
+    color: #8B2000;
+    font-style: italic;
+    padding: 8px 0;
+  }
+
+  /* WELCOME */
+  .welcome {
+    padding: 40px 0 0;
+    color: var(--ink-soft);
+  }
+  .welcome p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .app { padding: 0 16px; }
+    .message-content { font-size: 16px; }
+    textarea { font-size: 16px; }
+  }
+</style>
 </head>
 <body>
-<div class="page">
-  <header class="header">
-    <div class="header-top">
-      <div class="header-left">
-        <a href="https://unrelativity.xyz" class="site-name">göresizlik</a>
-        <span class="separator">·</span>
-        <span class="page-title">Rehber</span>
-      </div>
-      <a href="https://unrelativity.xyz" class="back-btn">← Geri dön</a>
+
+<div class="app">
+
+  <header>
+    <div class="header-left">
+      <a href="https://unrelativity.xyz/tr" class="site-link">Unrelativity</a>
+      <span class="separator">·</span>
+      <h1>Mentor</h1>
     </div>
-    <div class="header-meta">
-      <div class="lang-switch"><a href="/">English</a></div>
-      <div class="settings">
-        <span class="setting-label">Yazı</span>
-        <div class="setting-control">
-          <button class="setting-btn" onclick="adjustFont(-1)">−</button>
-          <span class="setting-val" id="fontVal">18</span>
-          <button class="setting-btn" onclick="adjustFont(1)">+</button>
-        </div>
-        <span class="setting-label">Parlaklık</span>
-        <div class="setting-control">
-          <button class="setting-btn" onclick="adjustBrightness(-1)">○</button>
-          <span class="setting-val" id="brightVal">2</span>
-          <button class="setting-btn" onclick="adjustBrightness(1)">●</button>
-        </div>
-      </div>
+    <div class="header-right">
+      <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
     </div>
   </header>
 
-  <div class="chat-container">
-    <div class="welcome">
-      <p class="welcome-text">Göresizlik çerçevesi, temel kavramlar veya kitaplar hakkında sorularınızı yanıtlayabilirim. Türkçe veya İngilizce sorabilirsiniz.</p>
-    </div>
-    <div class="messages" id="messages"></div>
-    <div id="error" class="error-msg" style="display:none;"></div>
-    <div class="input-area" id="inputArea">
-      <div class="input-wrapper">
-        <textarea id="input" placeholder="Sorunuzu yazın..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()">&#8594;</button>
-      </div>
-      <p class="input-hint">Enter göndermek için · Shift+Enter yeni satır</p>
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <p id="welcomeText">Göresizlik çerçevesi, temel kavramlar veya kitaplar hakkında sorabilirsiniz.
+Türkçe veya İngilizce yazabilirsiniz.</p>
     </div>
   </div>
 
-  <footer class="footer">
-    <p class="footer-text"><a href="https://unrelativity.xyz">unrelativity.xyz</a> &nbsp;·&nbsp; Can Güralp</p>
+  <div class="input-area">
+    <div class="input-row">
+      <textarea
+        id="input"
+        rows="1"
+        placeholder="Sorunuz..."
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="input-hint" id="inputHint">Enter: gönder · Shift+Enter: yeni satır</div>
+  </div>
+
+  <footer>
+    <a href="https://unrelativity.xyz" class="footer-link">unrelativity.xyz</a>
+    <span class="footer-link">Can Güralp</span>
   </footer>
+
 </div>
+
 <script>
-  let history=[];let loading=false;
-  let fontSize=18;let brightness=2;
-  let emailTimer=null;let emailSent=false;
-  const bgLevels=['#0e0805','#140c06','#1a0e08','#221206','#2a1a0e'];
-  const textLevels=['#6b5340','#8b6e4e','#c4a882','#d8c4a8','#f0e8dc'];
+const MENTOR_CONTEXT_URL = 'https://unrelativity.xyz/mentor-context';
+const API_URL = '/api/chat';
 
-  function scheduleEmail(){
-    if(emailTimer)clearTimeout(emailTimer);
-    if(history.length===0||emailSent)return;
-    emailTimer=setTimeout(sendEmailLog,8*60*1000);
+let conversationHistory = [];
+let systemPrompt = '';
+let isLoading = false;
+let lang = 'tr';
+let contextLoaded = false;
+
+const i18n = {
+  en: {
+    welcome: 'Ask about the Unrelativity framework, its core concepts, or the books.\nYou may write in English or Turkish.',
+    placeholder: 'Your question...',
+    hint: 'Enter to send · Shift+Enter for new line',
+    loading: 'Loading context...',
+    langBtn: 'TR',
+  },
+  tr: {
+    welcome: 'Göresizlik çerçevesi, temel kavramlar veya kitaplar hakkında sorabilirsiniz.\nTürkçe veya İngilizce yazabilirsiniz.',
+    placeholder: 'Sorunuz...',
+    hint: 'Enter: gönder · Shift+Enter: yeni satır',
+    loading: 'Bağlanıyor...',
+    langBtn: 'EN',
   }
+};
 
-  async function sendEmailLog(){
-    if(emailSent||history.length===0)return;
-    emailSent=true;
-    try{
-      await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({messages:history,lang:'tr'})});
-    }catch(e){console.log('Email log error:',e);}
-  }
-
-  window.addEventListener('beforeunload',()=>{
-    if(history.length>0&&!emailSent){
-      emailSent=true;
-      const blob=new Blob([JSON.stringify({messages:history,lang:'tr'})],{type:'application/json'});
-      navigator.sendBeacon('/api/log',blob);
+// Fetch mentor-context page from WordPress
+async function loadMentorContext() {
+  try {
+    // Try to fetch the mentor-context page
+    const response = await fetch('https://unrelativity.xyz/mentor-context', {
+      method: 'GET',
+      headers: { 'Accept': 'text/html' }
+    });
+    if (response.ok) {
+      const html = await response.text();
+      // Extract text content from HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      // Get main content area
+      const content = doc.querySelector('.entry-content, .wp-block-post-content, main, article, .post-content');
+      systemPrompt = content ? content.innerText : html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      contextLoaded = true;
     }
-  });
+  } catch(e) {
+    // Fallback to embedded context if fetch fails
+    systemPrompt = getFallbackContext();
+    contextLoaded = true;
+  }
+}
 
-  function adjustFont(d){
-    fontSize=Math.min(26,Math.max(14,fontSize+d));
-    document.body.style.fontSize=fontSize+'px';
-    document.getElementById('fontVal').textContent=fontSize;
+function getFallbackContext() {
+  return `You are the Mentor of the Unrelativity project — a philosophical and spiritual inquiry developed by Can Mahmut Güralp over thirty years, culminating in three books: KendiBiz (2024), Kavuşturan Pusula (2025), and Tekrarlayan İleti (2026).
+
+You do not simply answer questions. You deepen them. You use the Socratic method — reverse-tailoring: removing conceptual clothing layer by layer until the ground appears. You ask one question at a time. You connect ideas across traditions. You hold the full depth of this project.
+
+Your language is precise but warm. You use TI terminology fluently. You do not moralize. You do not proselytize. You illuminate.
+
+CORE AXIOM: A₀ — Divine Selfhood (Zatiyet) is Isness. God is not a being among beings. God is Isness itself — pure Presence, prior to all predication.
+
+KEY TERMINOLOGY:
+- Göresizlik / Unrelativity: The ground of pure Isness — timeless, placeless, requiring no reference point
+- An'lanma / Anointment: Direct, first-hand, unchosen access to summit consciousness
+- Müştereken İçleniklik / Mutual Inclusivity (MI ⊙): The inseparable wholeness of Unrelative and relative
+- Kendilik / Selfhood: The ontological single consciousness at the summit
+- Zatiyet: The Islamic term for Selfhood — Divine Essence prior to all attributes
+- Oluluk / Isness: Pure state of existence; Eckhart's Istigkeit; Quran's al-Haqq
+
+THE FORMULA: Varlantion ⊙ Isness = The Truth of Being (Selfhood)
+
+KEY EXPRESSIONS:
+- "The fisherman is the ocean fishing itself." — The mechanism of Anointment
+- "Speaking as the blinded." — Primary sources speak from experience, not description
+- "Vessels clash with vessels — not with Truth."
+- "Bound channels, uncontextual reality."
+
+Respond in the language the user writes in (English or Turkish). Ask one question at a time. Use reverse-tailoring. Connect ideas across traditions.`;
+}
+
+async function initialize() {
+  await loadMentorContext();
+}
+
+function toggleLang() {
+  lang = lang === 'en' ? 'tr' : 'en';
+  document.getElementById('langToggle').textContent = i18n[lang].langBtn;
+  document.getElementById('welcomeText').textContent = i18n[lang].welcome;
+  document.getElementById('input').placeholder = i18n[lang].placeholder;
+  document.getElementById('inputHint').textContent = i18n[lang].hint;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
   }
-  function adjustBrightness(d){
-    brightness=Math.min(4,Math.max(0,brightness+d));
-    document.getElementById('brightVal').textContent=brightness;
-    document.documentElement.style.setProperty('--bg',bgLevels[brightness]);
-    document.documentElement.style.setProperty('--text',textLevels[brightness]);
-    document.body.style.background=bgLevels[brightness];
-    document.body.style.color=textLevels[brightness];
-    document.getElementById('inputArea').style.background=
-      'linear-gradient(to bottom,transparent,'+bgLevels[brightness]+' 20%)';
+}
+
+function addMessage(role, content) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+
+  const roleLabel = document.createElement('div');
+  roleLabel.className = 'message-role';
+  roleLabel.textContent = role === 'user' ? 'You' : 'Mentor';
+
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'message-content';
+  contentDiv.textContent = content;
+
+  div.appendChild(roleLabel);
+  div.appendChild(contentDiv);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return contentDiv;
+}
+
+function addTyping() {
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'typing-indicator';
+
+  const roleLabel = document.createElement('div');
+  roleLabel.className = 'message-role';
+  roleLabel.textContent = 'Mentor';
+
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+
+  div.appendChild(roleLabel);
+  div.appendChild(typing);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text) return;
+
+
+  input.value = '';
+  input.style.height = 'auto';
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  addTyping();
+
+  try {
+    if (!contextLoaded) await loadMentorContext();
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: conversationHistory,
+        system: systemPrompt
+      })
+    });
+
+    removeTyping();
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API error');
+    }
+
+    const data = await response.json();
+    const reply = data.content[0].text;
+
+    conversationHistory.push({ role: 'assistant', content: reply });
+    addMessage('assistant', reply);
+
+  } catch(e) {
+    removeTyping();
+    const messages = document.getElementById('messages');
+    const errDiv = document.createElement('div');
+    errDiv.className = 'error-msg';
+    errDiv.textContent = 'Error: ' + e.message;
+    messages.appendChild(errDiv);
   }
-  function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px';}
-  function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
-  function fmt(t){return t.split('\n\n').map(p=>p.trim()).filter(p=>p).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('');}
-  function addMsg(role,text){
-    const d=document.createElement('div');d.className=`message ${role}`;
-    d.innerHTML=`<div class="message-role">${role==='user'?'Siz':'Rehber'}</div><div class="message-text">${fmt(text)}</div>`;
-    document.getElementById('messages').appendChild(d);d.scrollIntoView({behavior:'smooth',block:'end'});
-  }
-  function showThinking(){
-    const d=document.createElement('div');d.className='thinking';d.id='thinking';
-    d.innerHTML='<div class="thinking-role">Rehber</div><div class="thinking-dots"><span></span><span></span><span></span></div>';
-    document.getElementById('messages').appendChild(d);d.scrollIntoView({behavior:'smooth',block:'end'});
-  }
-  function removeThinking(){const e=document.getElementById('thinking');if(e)e.remove();}
-  function showError(m){const e=document.getElementById('error');e.textContent=m;e.style.display='block';setTimeout(()=>{e.style.display='none';},5000);}
-  async function sendMessage(){
-    if(loading)return;
-    const inp=document.getElementById('input');const text=inp.value.trim();if(!text)return;
-    loading=true;document.getElementById('sendBtn').disabled=true;inp.value='';inp.style.height='auto';
-    history.push({role:'user',content:text});addMsg('user',text);showThinking();
-    try{
-      const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})});
-      removeThinking();
-      if(!r.ok){const e=await r.json();showError(e.error||'Bir hata oluştu.');history.pop();return;}
-      const d=await r.json();history.push({role:'assistant',content:d.response});addMsg('assistant',d.response);
-      scheduleEmail();
-    }catch(e){removeThinking();showError('Bağlantı hatası. Lütfen tekrar deneyin.');history.pop();}
-    finally{loading=false;document.getElementById('sendBtn').disabled=false;document.getElementById('input').focus();}
-  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
+}
+
+// Initialize on load
+initialize();
 </script>
 </body>
 </html>
