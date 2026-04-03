@@ -331,7 +331,7 @@
 
 <script>
 const MENTOR_CONTEXT_URL = 'https://unrelativity.xyz/mentor-context';
-const API_URL = 'https://api.anthropic.com/v1/messages';
+const API_URL = '/api/chat';
 
 let conversationHistory = [];
 let systemPrompt = '';
@@ -488,16 +488,6 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  // Get API key from URL param or prompt
-  let apiKey = new URLSearchParams(window.location.search).get('key');
-  if (!apiKey) {
-    apiKey = sessionStorage.getItem('mentor_key');
-  }
-  if (!apiKey) {
-    apiKey = prompt('Please enter your Anthropic API key:');
-    if (!apiKey) return;
-    sessionStorage.setItem('mentor_key', apiKey);
-  }
 
   input.value = '';
   input.style.height = 'auto';
@@ -514,17 +504,10 @@ async function sendMessage() {
 
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-client-side-api-key-allowed': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages: conversationHistory
+        messages: conversationHistory,
+        system: systemPrompt
       })
     });
 
@@ -548,10 +531,6 @@ async function sendMessage() {
     errDiv.className = 'error-msg';
     errDiv.textContent = 'Error: ' + e.message;
     messages.appendChild(errDiv);
-    // Clear bad key
-    if (e.message.includes('auth') || e.message.includes('key') || e.message.includes('401')) {
-      sessionStorage.removeItem('mentor_key');
-    }
   }
 
   isLoading = false;
