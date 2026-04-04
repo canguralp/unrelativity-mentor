@@ -357,29 +357,9 @@ const i18n = {
   }
 };
 
-// Fetch mentor-context page from WordPress
 async function loadMentorContext() {
-  try {
-    // Try to fetch the mentor-context page
-    const response = await fetch('https://unrelativity.xyz/mentor-context', {
-      method: 'GET',
-      headers: { 'Accept': 'text/html' }
-    });
-    if (response.ok) {
-      const html = await response.text();
-      // Extract text content from HTML
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      // Get main content area
-      const content = doc.querySelector('.entry-content, .wp-block-post-content, main, article, .post-content');
-      systemPrompt = content ? content.innerText : html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-      contextLoaded = true;
-    }
-  } catch(e) {
-    // Fallback to embedded context if fetch fails
-    systemPrompt = getFallbackContext();
-    contextLoaded = true;
-  }
+  systemPrompt = getFallbackContext();
+  contextLoaded = true;
 }
 
 function getFallbackContext() {
