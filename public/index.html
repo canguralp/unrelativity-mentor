@@ -496,7 +496,9 @@ async function sendMessage() {
 
   addMessage('user', text);
   conversationHistory.push({ role: 'user', content: text });
-
+addMessage('user', text);
+conversationHistory.push({ role: 'user', content: text });
+resetInactivityTimer(); // timer her mesajdan sonra sıfırlanır
   addTyping();
 
   try {
