@@ -476,7 +476,6 @@ async function sendMessage() {
 
 addMessage('user', text);
 conversationHistory.push({ role: 'user', content: text });
-resetInactivityTimer(); // timer her mesajdan sonra sıfırlanır
   addTyping();
 
   try {
@@ -554,14 +553,8 @@ async function sendSessionEmail() {
   }
 }
 
-function resetInactivityTimer() {
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(sendSessionEmail, 10000); // 10 saniye
-}
 
 // Trigger on user activity
-document.addEventListener('mousemove', resetInactivityTimer);
-document.addEventListener('keypress', resetInactivityTimer);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) sendSessionEmail();
 });
