@@ -553,17 +553,26 @@ function formatDuration(ms) {
 async function sendSessionEmail() {
   if (emailSent || conversationHistory.length === 0) return;
   emailSent = true;
-  try {
-    await fetch('/api/email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        conversation: conversationHistory,
-        duration: formatDuration(Date.now() - sessionStart)
-      })
-    });
-  } catch(e) {
-    console.error('Email gönderilemedi:', e);
+  
+  const payload = JSON.stringify({
+    conversation: conversationHistory,
+    duration: formatDuration(Date.now() - sessionStart)
+  });
+
+  // beforeunload için sendBeacon, diğerleri için fetch
+  if (navigator.sendBeacon) {
+    const blob = new Blob([payload], { type: 'application/json' });
+    navigator.sendBeacon('/api/email', blob);
+  } else {
+    try {
+      await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      });
+    } catch(e) {
+      console.error('Email gönderilemedi:', e);
+    }
   }
 }
 
