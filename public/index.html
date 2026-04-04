@@ -537,7 +537,47 @@ async function sendMessage() {
   document.getElementById('sendBtn').disabled = false;
   input.focus();
 }
+// --- EMAIL TIMER ---
+let inactivityTimer = null;
+let sessionStart = Date.now();
+let emailSent = false;
 
+function formatDuration(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  return m > 0 ? `${m} dakika ${s % 60} saniye` : `${s} saniye`;
+}
+
+async function sendSessionEmail() {
+  if (emailSent || conversationHistory.length === 0) return;
+  emailSent = true;
+  try {
+    await fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        conversation: conversationHistory,
+        duration: formatDuration(Date.now() - sessionStart)
+      })
+    });
+  } catch(e) {
+    console.error('Email gönderilemedi:', e);
+  }
+}
+
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(sendSessionEmail, 10000); // 10 saniye
+}
+
+// Trigger on user activity
+document.addEventListener('mousemove', resetInactivityTimer);
+document.addEventListener('keypress', resetInactivityTimer);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) sendSessionEmail();
+});
+window.addEventListener('beforeunload', sendSessionEmail);
+// --- END EMAIL TIMER ---
 // Initialize on load
 initialize();
 </script>
