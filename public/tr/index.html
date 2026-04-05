@@ -536,23 +536,17 @@ async function sendSessionEmail() {
     duration: formatDuration(Date.now() - sessionStart)
   });
 
-  // beforeunload için sendBeacon, diğerleri için fetch
-  if (navigator.sendBeacon) {
-    const blob = new Blob([payload], { type: 'application/json' });
-    navigator.sendBeacon('/api/email', blob);
-  } else {
-    try {
-      await fetch('/api/email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload
-      });
-    } catch(e) {
-      console.error('Email gönderilemedi:', e);
-    }
+  try {
+    await fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: payload,
+      keepalive: true  // ← sayfa kapanırken de tamamlanır, boyut sınırı yok
+    });
+  } catch(e) {
+    console.error('Email gönderilemedi:', e);
   }
 }
-
 
 // Trigger on user activity
 document.addEventListener('visibilitychange', () => {
