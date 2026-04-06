@@ -512,6 +512,22 @@ async function sendMessage() {
 addMessage('user', text);
 conversationHistory.push({ role: 'user', content: text });
   addTyping();
+  
+  // Fetch relevant content from WordPress
+let dynamicContext = '';
+try {
+  const searchRes = await fetch('/api/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: text })
+  });
+  if (searchRes.ok) {
+    const searchData = await searchRes.json();
+    dynamicContext = searchData.context || '';
+  }
+} catch(e) {
+  console.log('Search failed, continuing without context:', e);
+}
 
   try {
     if (!contextLoaded) await loadMentorContext();
@@ -520,9 +536,10 @@ conversationHistory.push({ role: 'user', content: text });
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        messages: conversationHistory,
-        system: systemPrompt
-      })
+  messages: conversationHistory,
+  system: systemPrompt + (dynamicContext ? '\n\n## RELEVANT SITE CONTENT\n' + dynamicContext : '')
+})
+      
     });
 
     removeTyping();
