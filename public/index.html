@@ -563,37 +563,24 @@ function formatDuration(ms) {
 }
 
 async function sendSessionEmail() {
-  if (emailSent || conversationHistory.length === 0) return;
-  emailSent = true;
+  if (conversationHistory.length === 0) return;
   
   const payload = JSON.stringify({
     conversation: conversationHistory,
     duration: formatDuration(Date.now() - sessionStart)
   });
 
-  // beforeunload için sendBeacon, diğerleri için fetch
-  if (navigator.sendBeacon) {
-    const blob = new Blob([payload], { type: 'application/json' });
-    navigator.sendBeacon('/api/email', blob);
-  } else {
-    try {
-      await fetch('/api/email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload
-      });
-    } catch(e) {
-      console.error('Email gönderilemedi:', e);
-    }
-  }
+  fetch('/api/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: payload,
+    keepalive: true
+  });
 }
 
 
 // Trigger on user activity
 
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) sendSessionEmail();
-});
 window.addEventListener('beforeunload', sendSessionEmail);
 // --- END EMAIL TIMER ---
 // Initialize on load
