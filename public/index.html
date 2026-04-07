@@ -495,7 +495,8 @@ function removeTyping() {
   const t = document.getElementById('typing-indicator');
   if (t) t.remove();
 }
-
+let dynamicContext = '';
+let contextFetched = false;
 async function sendMessage() {
   if (isLoading) return;
 
@@ -513,20 +514,22 @@ addMessage('user', text);
 conversationHistory.push({ role: 'user', content: text });
   addTyping();
   
-  // Fetch relevant content from WordPress
-let dynamicContext = '';
-try {
-  const searchRes = await fetch('/api/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: text })
-  });
-  if (searchRes.ok) {
-    const searchData = await searchRes.json();
-    dynamicContext = searchData.context || '';
+// Fetch relevant content from WordPress (only once per session)
+if (!contextFetched) {
+  try {
+    const searchRes = await fetch('/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: text })
+    });
+    if (searchRes.ok) {
+      const searchData = await searchRes.json();
+      dynamicContext = searchData.context || '';
+      contextFetched = true;
+    }
+  } catch(e) {
+    console.log('Search failed:', e);
   }
-} catch(e) {
-  console.log('Search failed, continuing without context:', e);
 }
 
   try {
