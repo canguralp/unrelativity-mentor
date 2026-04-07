@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   try {
     const { query } = req.body;
     if (!query) return res.status(400).json({ error: 'Query required' });
-    const base = 'https://unrelativity.xyz/wp-json/wp/v2';
+    const base = 'https://public-api.wordpress.com/wp/v2/sites/unrelativity.xyz';
     const params = `search=${encodeURIComponent(query)}&per_page=3&_fields=title,excerpt,content`;
     const postsRes = await fetch(`${base}/posts?${params}`);
     const postsText = await postsRes.text();
