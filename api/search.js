@@ -9,10 +9,26 @@ export default async function handler(req, res) {
     if (!query) return res.status(400).json({ error: 'Query required' });
     const base = 'https://public-api.wordpress.com/wp/v2/sites/unrelativity.xyz';
     const params = `search=${encodeURIComponent(query)}&per_page=3&_fields=title,excerpt,content`;
-    const postsRes = await fetch(`${base}/posts?${params}`);
-    const postsText = await postsRes.text();
-    return res.status(200).json({ debug: postsText });
+    const [postsRes, pagesRes] = await Promise.all([
+      fetch(`${base}/posts?${params}`),
+      fetch(`${base}/pages?${params}`)
+    ]);
+    const [posts, pages] = await Promise.all([
+      postsRes.json(),
+      pagesRes.json()
+    ]);
+    const results = [...(Array.isArray(posts) ? posts : []), ...(Array.isArray(pages) ? pages : [])]
+      .slice(0, 3)
+      .map(item => {
+        const title = item.title?.rendered || '';
+        const content = item.content?.rendered
+          ? item.content.rendered.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 800)
+          : '';
+        return `### ${title}\n${content}`;
+      })
+      .join('\n\n');
+    return res.status(200).json({ context: results });
   } catch (e) {
-    return res.status(500).json({ error: e.message, stack: e.stack });
+    return res.status(500).json({ error: e.message });
   }
 }
