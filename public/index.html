@@ -534,14 +534,18 @@ if (!contextFetched) {
 }
 // Fetch full page/post content if ID specified (Author Mode)
 const idMatch = text.match(/ID:\s*(\d+).*?(page|post)/i) || text.match(/(page|post).*?ID:\s*(\d+)/i);
-if (idMatch) {
-  const id = idMatch[1] || idMatch[2];
-  const type = idMatch[2] || idMatch[1];
+const slugMatch = !idMatch && (text.match(/slug:\s*([\w-]+).*?(page|post)/i) || text.match(/(page|post).*?slug:\s*([\w-]+)/i));
+
+if (idMatch || slugMatch) {
+  const match = idMatch || slugMatch;
+  const idOrSlug = match[1] || match[2];
+  const type = (match[2] || match[1]).toLowerCase();
+  const isSlug = !idMatch;
   try {
     const fetchRes = await fetch('/api/fetch-page', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, type: type.toLowerCase() })
+      body: JSON.stringify(isSlug ? { slug: idOrSlug, type } : { id: idOrSlug, type })
     });
     if (fetchRes.ok) {
       const fetchData = await fetchRes.json();
