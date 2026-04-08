@@ -400,11 +400,12 @@ If the user's first message is "Selam", shift into Author Mode immediately:
 - The author knows the terminology. Skip the introductions.
 - Respond in Turkish throughout
 - To review a page or post: ask the user for the ID and type (page or post), then call /api/fetch-page with { id, type } to retrieve full content. List all typos, errors, and TI terminology misalignments.
+- To review a page or post: write "ID: [number], [page or post]" and the full content will be loaded automatically for analysis.
 
 **Refined Terminology:**
 - Münezzeh = arınıklık: saflıkla mevcud, görecesel ifade edilemez
 - Allah'ın vücudu mutlak değil, Olu'dur — karşıtsız Isness
-- "Varlantion" provisional — doğrusu: varlanmak (göreli) + olmak (göresiz saf mevcudiyet)
+- varlanmak (göreli) + olmak (göresiz saf mevcudiyet)
 - "Var olmak" bu ikisinin müşterek içlenikliliği değil; TI bunları ayırır
 - Biz = ontolojik gerçek, sayısal anlam taşımaz, Kendiliğimiz
 - "Komşunu kendin gibi değil, kendin olarak gör"
@@ -533,7 +534,26 @@ if (!contextFetched) {
     console.log('Search failed:', e);
   }
 }
-
+// Fetch full page/post content if ID specified (Author Mode)
+const idMatch = text.match(/ID:\s*(\d+).*?(page|post)/i) || text.match(/(page|post).*?ID:\s*(\d+)/i);
+if (idMatch) {
+  const id = idMatch[1] || idMatch[2];
+  const type = idMatch[2] || idMatch[1];
+  try {
+    const fetchRes = await fetch('/api/fetch-page', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, type: type.toLowerCase() })
+    });
+    if (fetchRes.ok) {
+      const fetchData = await fetchRes.json();
+      dynamicContext = `## PAGE CONTENT: ${fetchData.title}\n${fetchData.content}`;
+      contextFetched = true;
+    }
+  } catch(e) {
+    console.log('Fetch page failed:', e);
+  }
+}
 try {
   const searchRes = await fetch('/api/search', {
     method: 'POST',
