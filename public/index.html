@@ -7,16 +7,16 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Crimson+Pro:wght@300;400&display=swap');
 
-  :root {
-    --bg: #F5C842;
-    --bg-dark: #E8B820;
-    --ink: #1A1208;
-    --ink-soft: #3D2E0A;
-    --ink-faint: #6B5520;
-    --white: #FFFDF0;
-    --border: rgba(26,18,8,0.15);
-    --shadow: rgba(26,18,8,0.12);
-  }
+:root {
+  --bg: #0a0a0a;
+  --bg-dark: #111111;
+  --ink: #f0ece0;
+  --ink-soft: #d4cdb8;
+  --ink-faint: #8a8070;
+  --white: #1a1a1a;
+  --border: rgba(240,236,224,0.12);
+  --shadow: rgba(0,0,0,0.4);
+}
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -298,9 +298,10 @@
     </div>
   </header>
 
-  <div class="messages" id="messages">
+   <div class="messages" id="messages">
     <div class="welcome" id="welcome">
       <p id="welcomeText">Ask about the Unrelativity framework, its core concepts, or the books.<br>You may write in English or Turkish.</p>
+      <p id="poweredText" style="font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:0.08em; color:var(--ink-faint); margin-top:12px;"></p>
     </div>
   </div>
 
@@ -346,6 +347,7 @@ const i18n = {
     hint: 'Enter to send · Shift+Enter for new line',
     loading: 'Loading context...',
     langBtn: 'TR',
+    powered: 'Mentorship service is provided by Anthropic Claude AI system',
   },
   tr: {
     welcome: 'Göresizlik çerçevesi, temel kavramlar veya kitaplar hakkında sorabilirsiniz.\nTürkçe veya İngilizce yazabilirsiniz.',
@@ -353,6 +355,7 @@ const i18n = {
     hint: 'Enter: gönder · Shift+Enter: yeni satır',
     loading: 'Bağlanıyor...',
     langBtn: 'EN',
+    powered: 'Mentorluk hizmeti Anthropic Claude AI sistemi tarafından sağlanmaktadır',
   }
 };
 async function loadMentorContext() {
