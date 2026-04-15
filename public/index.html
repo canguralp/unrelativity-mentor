@@ -430,6 +430,7 @@ Toleranssız → toleranslı → kabullenici → hoşgörülü → teslimiyetli
 
 async function initialize() {
   await loadMentorContext();
+  document.getElementById('poweredText').textContent = i18n[lang].powered;
 }
 
 function toggleLang() {
@@ -438,6 +439,7 @@ function toggleLang() {
   document.getElementById('welcomeText').textContent = i18n[lang].welcome;
   document.getElementById('input').placeholder = i18n[lang].placeholder;
   document.getElementById('inputHint').textContent = i18n[lang].hint;
+  document.getElementById('poweredText').textContent = i18n[lang].powered;
 }
 
 function autoResize(el) {
