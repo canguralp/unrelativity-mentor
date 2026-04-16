@@ -262,7 +262,7 @@
 
   /* WELCOME */
   .welcome {
-    padding: 40px 0 0;
+    padding: 16px 0 0;
     color: var(--ink-soft);
   }
   .welcome p {
@@ -434,16 +434,9 @@ Toleranssız → toleranslı → kabullenici → hoşgörülü → teslimiyetli
   await loadMentorContext();
   document.getElementById('poweredText').textContent = i18n[lang].powered;
 }
-
 function toggleLang() {
-  lang = lang === 'en' ? 'tr' : 'en';
-  document.getElementById('langToggle').textContent = i18n[lang].langBtn;
-  document.getElementById('welcomeText').textContent = i18n[lang].welcome;
-  document.getElementById('input').placeholder = i18n[lang].placeholder;
-  document.getElementById('inputHint').textContent = i18n[lang].hint;
-  document.getElementById('poweredText').textContent = i18n[lang].powered;
+  window.location.href = '/';
 }
-
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
