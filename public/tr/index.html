@@ -296,12 +296,7 @@
     </div>
   </header>
 
-  <div class="messages" id="messages">
-    <div class="welcome" id="welcome">
-      
-    </div>
-  </div>
-<div class="messages" id="messages">
+ <div class="messages" id="messages">
     <div class="welcome" id="welcome">
       <p id="welcomeText">Göresizlik çerçevesi, temel kavramlar veya kitaplar hakkında sorabilirsiniz. Türkçe veya İngilizce yazabilirsiniz.</p>
       <p id="poweredText" style="font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:0.08em; color:var(--ink-faint); margin-top:12px;">Mentorluk hizmeti Anthropic Claude AI sistemi tarafından sağlanmaktadır</p>
@@ -359,6 +354,7 @@ const i18n = {
     langBtn: 'EN',
     powered: 'Mentorluk hizmeti Anthropic Claude AI sistemi tarafından sağlanmaktadır',
   }
+  };
 
 async function loadMentorContext() {
   systemPrompt = getFallbackContext();
@@ -557,19 +553,6 @@ if (idMatch || slugMatch) {
   } catch(e) {
     console.log('Fetch page failed:', e);
   }
-}
-try {
-  const searchRes = await fetch('/api/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: text })
-  });
-  if (searchRes.ok) {
-    const searchData = await searchRes.json();
-    dynamicContext = searchData.context || '';
-  }
-} catch(e) {
-  console.log('Search failed, continuing without context:', e);
 }
   try {
     if (!contextLoaded) await loadMentorContext();
